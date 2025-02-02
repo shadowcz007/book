@@ -28,7 +28,8 @@ export default function BooksPage() {
         data = await bookApi.getBooks();
       }
       setBooks(data);
-    } catch (error) {
+    } catch (error: any) {
+      console.error('获取图书列表失败:', error);
       message.error('获取图书列表失败');
     } finally {
       setLoading(false);
@@ -52,7 +53,8 @@ export default function BooksPage() {
       message.success('添加图书成功');
       setIsModalOpen(false);
       fetchBooks();
-    } catch (error) {
+    } catch (error: any) {
+      console.error('添加图书失败:', error);
       message.error('添加图书失败');
     }
   };
@@ -68,7 +70,8 @@ export default function BooksPage() {
       setIsModalOpen(false);
       setEditingBook(null);
       fetchBooks();
-    } catch (error) {
+    } catch (error: any) {
+      console.error('更新图书失败:', error);
       message.error('更新图书失败');
     }
   };
@@ -78,9 +81,9 @@ export default function BooksPage() {
       await bookApi.deleteBook(id);
       message.success('删除图书成功');
       await fetchBooks();
-    } catch (error) {
+    } catch (error: any) {
+      console.error('删除图书失败:', error);
       message.error('删除图书失败');
-      throw error;
     }
   };
 
@@ -119,7 +122,7 @@ export default function BooksPage() {
     {
       title: '操作',
       key: 'action',
-      render: (_: any, record: Book) => (
+      render: (_: unknown, record: Book) => (
         <Space size="middle">
           {userRole === 'user' && record.stock > 0 && (
             <Button
@@ -130,10 +133,11 @@ export default function BooksPage() {
                   content: `确定要借阅《${record.title}》吗？`,
                   onOk: async () => {
                     try {
-                      await borrowApi.borrowBook(record.id, userId);
+                      await borrowApi.borrowBook(record.id, userId||'');
                       message.success('借阅成功');
                       fetchBooks();
-                    } catch (error) {
+                    } catch (error: any) {
+                      console.error('借阅失败:', error);
                       message.error('借阅失败');
                     }
                   },
@@ -158,7 +162,7 @@ export default function BooksPage() {
             onConfirm={async () => {
               try {
                 await handleDelete(record.id);
-              } catch (error) {
+              } catch (error: any) {
                 console.error('删除失败:', error);
               }
             }}

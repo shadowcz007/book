@@ -1,6 +1,4 @@
 import { Book, User, BorrowRecord } from '@/types';
-import { books, users, borrowRecords } from '@/mock/data';
-import { booksDb, BookCreate, BookUpdate } from '@/db/books';
 
 // 图书相关 API
 export const bookApi = {

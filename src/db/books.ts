@@ -1,9 +1,6 @@
 import { pool } from './init';
 import { Book } from '@/types';
 
-export interface BookCreate extends Omit<Book, 'id'> {}
-export interface BookUpdate extends Partial<BookCreate> {}
-
 export const booksDb = {
   async findAll(): Promise<Book[]> {
     const result = await pool.query(
