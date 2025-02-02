@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 // 更新借阅记录（还书/续借）
 export async function PUT(
   request: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: { id: string } }
 ) {
   try {
     const { action } = await request.json();
@@ -20,7 +20,7 @@ export async function PUT(
            SET status = 'returned', return_date = CURRENT_TIMESTAMP 
            WHERE id = $1 AND status = 'borrowed'
            RETURNING book_id`,
-          [context.params.id]
+          [params.id]
         );
         
         if (borrowResult.rows.length === 0) {
@@ -40,7 +40,7 @@ export async function PUT(
                renewed_times = renewed_times + 1
            WHERE id = $1 AND status = 'borrowed' AND renewed_times < 2
            RETURNING *`,
-          [context.params.id]
+          [params.id]
         );
         
         if (borrowResult.rows.length === 0) {

@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function PUT(
   request: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: { id: string } }
 ) {
   try {
     const body = await request.json();
@@ -14,7 +14,7 @@ export async function PUT(
        SET role = $1
        WHERE id = $2
        RETURNING *`,
-      [role, context.params.id]
+      [role, params.id]
     );
     
     if (result.rows.length === 0) {
@@ -36,12 +36,12 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: { id: string } }
 ) {
   try {
     const result = await pool.query(
       'DELETE FROM users WHERE id = $1 RETURNING id',
-      [context.params.id]
+      [params.id]
     );
     
     if (result.rows.length === 0) {
