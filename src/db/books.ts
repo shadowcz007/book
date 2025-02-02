@@ -17,7 +17,7 @@ export const booksDb = {
     return result.rows[0] || null;
   },
 
-  async create(book: BookCreate): Promise<Book> {
+  async create(book: any): Promise<Book> {
     const result = await pool.query(
       `INSERT INTO books (
         title, author, isbn, publisher, publish_date, 
@@ -38,7 +38,7 @@ export const booksDb = {
     return result.rows[0];
   },
 
-  async update(id: string, book: BookUpdate): Promise<Book | null> {
+  async update(id: string, book: any): Promise<Book | null> {
     const setClause = Object.keys(book)
       .map((key, index) => `${key} = $${index + 2}`)
       .join(', ');
@@ -57,7 +57,7 @@ export const booksDb = {
   },
 
   async delete(id: string): Promise<boolean> {
-    const result = await pool.query(
+    const result:any = await pool.query(
       'DELETE FROM books WHERE id = $1 RETURNING id',
       [id]
     );
