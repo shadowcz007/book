@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Form, Input, Button, Card, message } from 'antd';
+import { Form, Input, Button, Card } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -29,7 +29,7 @@ export default function LoginPage() {
   const onFinish = async (values: LoginForm) => {
     try {
 
-      const response = await userApi.login(values.username, values.password);
+      const response:any = await userApi.login(values.username, values.password);
       
       // 保存用户信息到 localStorage
       localStorage.setItem('token', response.token);
@@ -53,7 +53,7 @@ export default function LoginPage() {
       alignItems: 'center',
       background: '#f0f2f5' 
     }}>
-      <Notification {...notification} />
+      <Notification {...(notification || { type: 'success', message: '', visible: false })} />
       <Card title="图书管理系统登录" style={{ width: 400 }}>
         <Form
           name="login"
