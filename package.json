@@ -11,10 +11,12 @@
   "dependencies": {
     "@ant-design/icons": "^5.6.0",
     "@ant-design/nextjs-registry": "^1.0.2",
+    "@types/pg": "^8.11.11",
     "antd": "^5.23.3",
     "axios": "^1.7.9",
     "dayjs": "^1.11.13",
     "next": "15.1.6",
+    "pg": "^8.13.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },

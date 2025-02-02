@@ -1,37 +1,60 @@
 import { Book, User, BorrowRecord } from '@/types';
 import { books, users, borrowRecords } from '@/mock/data';
+import { booksDb, BookCreate, BookUpdate } from '@/db/books';
 
 // 图书相关 API
 export const bookApi = {
   getBooks: async (): Promise<Book[]> => {
-    return Promise.resolve(books);
+    const response = await fetch('/api/books');
+    if (!response.ok) {
+      throw new Error('获取图书列表失败');
+    }
+    return response.json();
   },
 
   addBook: async (book: Omit<Book, 'id'>): Promise<Book> => {
-    const newBook = {
-      ...book,
-      id: new Date().getTime().toString(),
-    };
-    books.push(newBook);
-    return Promise.resolve(newBook);
+    const response = await fetch('/api/books', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(book),
+    });
+    if (!response.ok) {
+      throw new Error('添加图书失败');
+    }
+    return response.json();
   },
 
   updateBook: async (id: string, book: Partial<Book>): Promise<Book> => {
-    const index = books.findIndex(b => b.id === id);
-    if (index === -1) {
-      return Promise.reject(new Error('图书不存在'));
+    const response = await fetch(`/api/books/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(book),
+    });
+    if (!response.ok) {
+      throw new Error('更新图书失败');
     }
-    books[index] = { ...books[index], ...book };
-    return Promise.resolve(books[index]);
+    return response.json();
   },
 
   deleteBook: async (id: string): Promise<void> => {
-    const index = books.findIndex(b => b.id === id);
-    if (index === -1) {
-      return Promise.reject(new Error('图书不存在'));
+    const response = await fetch(`/api/books/${id}`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) {
+      throw new Error('删除图书失败');
     }
-    books.splice(index, 1);
-    return Promise.resolve();
+  },
+
+  searchBooks: async (query: string): Promise<Book[]> => {
+    const response = await fetch(`/api/books/search?q=${encodeURIComponent(query)}`);
+    if (!response.ok) {
+      throw new Error('搜索图书失败');
+    }
+    return response.json();
   },
 };
 

@@ -16,10 +16,15 @@ export default function BooksPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingBook, setEditingBook] = useState<Book | null>(null);
 
-  const fetchBooks = async () => {
+  const fetchBooks = async (search?: string) => {
     setLoading(true);
     try {
-      const data = await bookApi.getBooks();
+      let data;
+      if (search) {
+        data = await bookApi.searchBooks(search);
+      } else {
+        data = await bookApi.getBooks();
+      }
       setBooks(data);
     } catch (error) {
       message.error('获取图书列表失败');
@@ -154,8 +159,10 @@ export default function BooksPage() {
           <Search
             placeholder="搜索图书"
             allowClear
-            onSearch={value => setSearchText(value)}
-            onChange={e => setSearchText(e.target.value)}
+            onSearch={value => {
+              setSearchText(value);
+              fetchBooks(value);
+            }}
             style={{ width: 300 }}
           />
         </Space>

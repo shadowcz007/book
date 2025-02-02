@@ -25,10 +25,11 @@ export default function BookForm({
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
-      onSubmit({
+      const formData = {
         ...values,
-        publishDate: values.publishDate.format('YYYY-MM-DD'),
-      });
+        publish_date: values.publish_date ? values.publish_date.format('YYYY-MM-DD') : undefined,
+      };
+      onSubmit(formData);
     } catch (error) {
       console.error('表单验证失败:', error);
     }
@@ -47,7 +48,7 @@ export default function BookForm({
         layout="vertical"
         initialValues={initialValues ? {
           ...initialValues,
-          publishDate: initialValues.publishDate ? dayjs(initialValues.publishDate) : undefined,
+          publish_date: initialValues.publish_date ? dayjs(initialValues.publish_date) : undefined,
         } : undefined}
       >
         <Form.Item
@@ -69,7 +70,23 @@ export default function BookForm({
         <Form.Item
           name="isbn"
           label="ISBN"
-          rules={[{ required: true, message: '请输入ISBN' }]}
+          rules={[
+            { required: true, message: '请输入ISBN' },
+            {
+              validator: async (_, value) => {
+                if (!value) return;
+                try {
+                  const response = await fetch(`/api/books/check-isbn?isbn=${value}`);
+                  const data = await response.json();
+                  if (data.exists && (!initialValues || initialValues.isbn !== value)) {
+                    throw new Error('该ISBN已存在');
+                  }
+                } catch (error: any) {
+                  throw new Error(error.message || 'ISBN验证失败');
+                }
+              }
+            }
+          ]}
         >
           <Input />
         </Form.Item>
@@ -83,7 +100,7 @@ export default function BookForm({
         </Form.Item>
 
         <Form.Item
-          name="publishDate"
+          name="publish_date"
           label="出版日期"
           rules={[{ required: true, message: '请选择出版日期' }]}
         >

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { AntdRegistry } from '@ant-design/nextjs-registry';
 import "./globals.css";
+import { initDatabase } from '@/db/init';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,6 +16,9 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // 在应用启动时初始化数据库
+  initDatabase().catch(console.error);
+
   return (
     <html lang="zh-CN">
       <body className={inter.className}>
