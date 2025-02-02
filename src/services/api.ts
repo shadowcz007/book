@@ -61,26 +61,62 @@ export const bookApi = {
 // 用户相关 API
 export const userApi = {
   getUsers: async (): Promise<User[]> => {
-    return Promise.resolve(users);
+    const response = await fetch('/api/users');
+    if (!response.ok) {
+      throw new Error('获取用户列表失败');
+    }
+    return response.json();
   },
 
   login: async (username: string, password: string): Promise<User> => {
-    const user = users.find(u => u.username === username);
-    if (!user) {
-      return Promise.reject(new Error('用户不存在'));
+    const response = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username, password }),
+    });
+    if (!response.ok) {
+      throw new Error('用户名或密码错误');
     }
-    // 实际应用中应该进行密码验证
-    return Promise.resolve(user);
+    return response.json();
   },
 
-  register: async (user: Omit<User, 'id' | 'createdAt'>): Promise<User> => {
-    const newUser = {
-      ...user,
-      id: String(users.length + 1),
-      createdAt: new Date().toISOString(),
-    };
-    users.push(newUser);
-    return Promise.resolve(newUser);
+  register: async (user: { username: string; email: string; password: string }): Promise<User> => {
+    const response = await fetch('/api/users', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(user),
+    });
+    if (!response.ok) {
+      throw new Error('注册失败');
+    }
+    return response.json();
+  },
+
+  updateUser: async (id: string, updates: Partial<User>): Promise<User> => {
+    const response = await fetch(`/api/users/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updates),
+    });
+    if (!response.ok) {
+      throw new Error('更新用户失败');
+    }
+    return response.json();
+  },
+
+  deleteUser: async (id: string): Promise<void> => {
+    const response = await fetch(`/api/users/${id}`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) {
+      throw new Error('删除用户失败');
+    }
   },
 };
 

@@ -14,6 +14,7 @@
     "@types/pg": "^8.11.11",
     "antd": "^5.23.3",
     "axios": "^1.7.9",
+    "bcryptjs": "^2.4.3",
     "dayjs": "^1.11.13",
     "next": "15.1.6",
     "pg": "^8.13.1",
@@ -22,6 +23,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

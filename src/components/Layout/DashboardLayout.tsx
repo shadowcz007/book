@@ -1,26 +1,34 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Layout, Menu } from 'antd';
 import {
   BookOutlined,
   UserOutlined,
   SwapOutlined,
   BarChartOutlined,
+  LogoutOutlined,
 } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 
 const { Header, Sider, Content } = Layout;
 
-export default function DashboardLayout({
-  children,
-}: {
+interface DashboardLayoutProps {
   children: React.ReactNode;
-}) {
+}
+
+export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [collapsed, setCollapsed] = useState(false);
+  const [userRole, setUserRole] = useState<'admin' | 'user'>('user');
   const router = useRouter();
 
-  const menuItems = [
+  useEffect(() => {
+    // 从 localStorage 或 session 中获取用户角色
+    const role = localStorage.getItem('userRole') as 'admin' | 'user';
+    setUserRole(role || 'user');
+  }, []);
+
+  const adminMenuItems = [
     {
       key: 'books',
       icon: <BookOutlined />,
@@ -43,6 +51,28 @@ export default function DashboardLayout({
     },
   ];
 
+  const userMenuItems = [
+    {
+      key: 'borrowing',
+      icon: <SwapOutlined />,
+      label: '我的借阅',
+    },
+  ];
+
+  const handleLogout = () => {
+    localStorage.removeItem('userRole');
+    router.push('/login');
+  };
+
+  const menuItems = [
+    ...(userRole === 'admin' ? adminMenuItems : userMenuItems),
+    {
+      key: 'logout',
+      icon: <LogoutOutlined />,
+      label: '退出登录',
+    },
+  ];
+
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed}>
@@ -50,9 +80,15 @@ export default function DashboardLayout({
         <Menu
           theme="dark"
           mode="inline"
-          defaultSelectedKeys={['books']}
+          defaultSelectedKeys={['borrowing']}
           items={menuItems}
-          onClick={({ key }) => router.push(`/dashboard/${key}`)}
+          onClick={({ key }) => {
+            if (key === 'logout') {
+              handleLogout();
+            } else {
+              router.push(`/dashboard/${key}`);
+            }
+          }}
         />
       </Sider>
       <Layout>

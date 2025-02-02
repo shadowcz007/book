@@ -1,9 +1,12 @@
 'use client';
 
-import React from 'react';
-import { Form, Input, Button, Card, message } from 'antd';
+import React, { useState } from 'react';
+import { Form, Input, Button, Card } from 'antd';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { userApi } from '@/services/api';
+import Notification from '@/components/Notification';
+
 
 interface RegisterForm {
   username: string;
@@ -14,11 +17,31 @@ interface RegisterForm {
 
 export default function RegisterPage() {
   const router = useRouter();
+  const [notification, setNotification] = useState<{
+    type: 'success' | 'error';
+    message: string;
+    visible: boolean;
+  }>({ type: 'success', message: '', visible: false });
 
-  const onFinish = (values: RegisterForm) => {
-    // 这里应该调用真实的注册 API
-    message.success('注册成功');
-    router.push('/login');
+  const showNotification = (type: 'success' | 'error', message: string) => {
+    setNotification({ type, message, visible: true });
+    setTimeout(() => setNotification(null), 3000);
+  };
+
+  const onFinish = async (values: RegisterForm) => {
+    try {
+      await userApi.register({
+        username: values.username,
+        email: values.email,
+        password: values.password
+      });
+      showNotification('success', '注册成功');
+      setTimeout(() => {
+        router.push('/login');
+      }, 1000);
+    } catch (error) {
+      showNotification('error', '注册失败，请重试');
+    }
   };
 
   return (
@@ -29,6 +52,7 @@ export default function RegisterPage() {
       alignItems: 'center',
       background: '#f0f2f5' 
     }}>
+      <Notification {...notification} />
       <Card title="注册新用户" style={{ width: 400 }}>
         <Form
           name="register"

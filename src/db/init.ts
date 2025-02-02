@@ -11,6 +11,23 @@ export const pool = new Pool({
 export async function initDatabase() {
   const client = await pool.connect();
   try {
+    // 创建用户表
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        username VARCHAR(255) UNIQUE NOT NULL,
+        email VARCHAR(255) UNIQUE NOT NULL,
+        password VARCHAR(255) NOT NULL,
+        role VARCHAR(50) NOT NULL DEFAULT 'user',
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+
+      -- 创建管理员账号（如果不存在）
+      INSERT INTO users (username, email, password, role)
+      VALUES ('admin', 'admin@example.com', 'admin123', 'admin')
+      ON CONFLICT (username) DO NOTHING;
+    `);
+
     // 创建图书表
     await client.query(`
       CREATE TABLE IF NOT EXISTS books (
