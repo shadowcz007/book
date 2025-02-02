@@ -13,7 +13,7 @@ export default function UsersPage() {
   const [loading, setLoading] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
-  const [notification, setNotification] = useState<{
+  const [notification, setNotification]:any = useState<{
     type: 'success' | 'error';
     message: string;
     visible: boolean;
