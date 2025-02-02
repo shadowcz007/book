@@ -8,8 +8,8 @@ export interface Book {
   category: string;
   description: string;
   stock: number;
-  created_at: string;
-  updated_at: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface User {
@@ -24,10 +24,10 @@ export interface BorrowRecord {
   id: string;
   bookId: string;
   userId: string;
-  bookTitle: string;
-  bookAuthor: string;
-  borrowDate: string;
-  dueDate: string;
+  bookTitle?: string;
+  bookAuthor?: string;
+  borrowDate?: string;
+  dueDate?: string;
   returnDate?: string;
-  status: 'borrowed' | 'returned' | 'overdue';
+  status?: 'borrowed' | 'returned' | 'overdue';
 }
