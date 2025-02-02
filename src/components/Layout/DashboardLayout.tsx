@@ -20,6 +20,7 @@ interface DashboardLayoutProps {
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [collapsed, setCollapsed] = useState(false);
   const [userRole, setUserRole] = useState<'admin' | 'user'>('user');
+  const pathname = usePathname();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -95,6 +96,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               style: { marginTop: 'auto' }
             },
           ]}
+
         />
       </Sider>
       <Layout>

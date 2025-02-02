@@ -31,12 +31,14 @@ export default function StatisticsPage() {
   const fetchStatistics = async () => {
     setLoading(true);
     try {
+
       const response = await fetch('/api/statistics');
       if (!response.ok) {
         throw new Error('获取统计数据失败');
       }
       const data = await response.json();
       setStatistics(data);
+
     } catch (error) {
       console.error('获取统计数据失败:', error);
       showNotification('error', '获取统计数据失败');

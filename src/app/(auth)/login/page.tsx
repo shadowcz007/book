@@ -28,6 +28,7 @@ export default function LoginPage() {
 
   const onFinish = async (values: LoginForm) => {
     try {
+
       const response = await userApi.login(values.username, values.password);
       
       // 保存用户信息到 localStorage
@@ -35,7 +36,6 @@ export default function LoginPage() {
       localStorage.setItem('userId', response.user.id.toString());
       localStorage.setItem('userRole', response.user.role);
       localStorage.setItem('username', response.user.username);
-
       showNotification('success', '登录成功');
       setTimeout(() => {
         router.push(response.user.role === 'admin' ? '/dashboard/books' : '/dashboard/borrowing');

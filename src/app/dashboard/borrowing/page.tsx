@@ -1,7 +1,9 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+
 import { Table, Button, Space, Tag, message, Modal, Tabs } from 'antd';
+
 import { borrowApi, bookApi } from '@/services/api';
 import { BorrowRecord, Book } from '@/types';
 import DashboardLayout from '@/components/Layout/DashboardLayout';
@@ -10,11 +12,14 @@ import { showNotification } from '@/components/Common/Notification';
 
 const { TabPane } = Tabs;
 
+const { Search } = Input;
+
 export default function BorrowingPage() {
   const router = useRouter();
   const [records, setRecords] = useState<BorrowRecord[]>([]);
   const [availableBooks, setAvailableBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(false);
+
   const [userRole, setUserRole] = useState<string>('');
   const [userId, setUserId] = useState<string>('');
 
@@ -34,9 +39,10 @@ export default function BorrowingPage() {
     fetchData();
   }, []);
 
-  const fetchData = async () => {
+  const fetchRecords = async () => {
     setLoading(true);
     try {
+
       const [recordsData, booksData] = await Promise.all([
         userRole === 'admin' 
           ? borrowApi.getBorrowRecords()
@@ -49,10 +55,12 @@ export default function BorrowingPage() {
     } catch (error) {
       showNotification('error', '获取数据失败');
       console.error('获取借阅记录失败:', error);
+
     } finally {
       setLoading(false);
     }
   };
+
 
   const handleBorrow = async (bookId: string) => {
     if (!userId) {
@@ -77,19 +85,23 @@ export default function BorrowingPage() {
     return false;
   };
 
+
   const handleReturn = async (record: BorrowRecord) => {
     if (!checkPermission(record)) return;
     
     try {
       await borrowApi.returnBook(record.id);
       showNotification('success', '还书成功');
+
       fetchData();
+
     } catch (error) {
       showNotification('error', '还书失败');
     }
   };
 
   const handleRenew = async (record: BorrowRecord) => {
+
     if (!checkPermission(record)) return;
     
     try {
@@ -99,6 +111,7 @@ export default function BorrowingPage() {
     } catch (error) {
       showNotification('error', '续借失败');
     }
+
   };
 
   const borrowedBooksColumns = [
@@ -113,6 +126,7 @@ export default function BorrowingPage() {
       dataIndex: 'book_author',
       key: 'book_author',
       render: (text: string) => text || '未知作者',
+
     },
     {
       title: '借阅时间',
@@ -126,6 +140,7 @@ export default function BorrowingPage() {
           return '日期格式错误';
         }
       },
+
     },
     {
       title: '应还时间',
@@ -139,6 +154,7 @@ export default function BorrowingPage() {
           return '日期格式错误';
         }
       },
+
     },
     {
       title: '状态',
@@ -214,6 +230,7 @@ export default function BorrowingPage() {
         >
           借阅
         </Button>
+
       ),
     },
   ];

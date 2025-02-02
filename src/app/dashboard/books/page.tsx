@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Space, Input, Modal, message, Popconfirm } from 'antd';
-import { bookApi } from '@/services/api';
+import { bookApi, borrowApi } from '@/services/api';
 import { Book } from '@/types';
 import DashboardLayout from '@/components/Layout/DashboardLayout';
 import BookForm from '@/components/Books/BookForm';
@@ -15,6 +15,8 @@ export default function BooksPage() {
   const [searchText, setSearchText] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingBook, setEditingBook] = useState<Book | null>(null);
+  const [userRole, setUserRole] = useState<'admin' | 'user'>('user');
+  const [userId, setUserId] = useState<string | null>(null);
 
   const fetchBooks = async (search?: string) => {
     setLoading(true);
@@ -35,6 +37,13 @@ export default function BooksPage() {
 
   useEffect(() => {
     fetchBooks();
+  }, []);
+
+  useEffect(() => {
+    const role = localStorage.getItem('userRole') as 'admin' | 'user';
+    const uid = localStorage.getItem('userId');
+    setUserRole(role || 'user');
+    setUserId(uid);
   }, []);
 
   const handleAdd = async (values: Partial<Book>) => {
@@ -112,6 +121,28 @@ export default function BooksPage() {
       key: 'action',
       render: (_: any, record: Book) => (
         <Space size="middle">
+          {userRole === 'user' && record.stock > 0 && (
+            <Button
+              type="primary"
+              onClick={() => {
+                Modal.confirm({
+                  title: '确认借阅',
+                  content: `确定要借阅《${record.title}》吗？`,
+                  onOk: async () => {
+                    try {
+                      await borrowApi.borrowBook(record.id, userId);
+                      message.success('借阅成功');
+                      fetchBooks();
+                    } catch (error) {
+                      message.error('借阅失败');
+                    }
+                  },
+                });
+              }}
+            >
+              借阅
+            </Button>
+          )}
           <Button 
             type="link" 
             onClick={() => {

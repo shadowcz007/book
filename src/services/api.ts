@@ -162,7 +162,6 @@ export const borrowApi = {
     }
     return response.json();
   },
-
   renewBook: async (recordId: string): Promise<BorrowRecord> => {
     const response = await fetch(`/api/borrow/${recordId}`, {
       method: 'PUT',
@@ -174,6 +173,7 @@ export const borrowApi = {
     if (!response.ok) {
       throw new Error('续借失败');
     }
+
     return response.json();
   },
 }; 
