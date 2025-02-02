@@ -7,7 +7,7 @@ export const books: Book[] = [
     author: '刘慈欣',
     isbn: '9787536692930',
     publisher: '重庆出版社',
-    publishDate: '2008-01-01',
+    publish_date: '2008-01-01',
     category: '科幻',
     description: '地球文明面临外星文明的威胁...',
     stock: 5

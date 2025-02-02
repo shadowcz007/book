@@ -1,10 +1,10 @@
 import { pool } from '@/db/config';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 // 更新借阅记录（还书/续借）
 export async function PUT(
-  request: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  { params }:any
 ) {
   try {
     const { action } = await request.json();

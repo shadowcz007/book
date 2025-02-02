@@ -1,5 +1,5 @@
 import { pool } from '@/db/config';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 // 获取所有图书
 export async function GET() {
@@ -16,7 +16,7 @@ export async function GET() {
 }
 
 // 创建新图书
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { title, author, isbn, publisher, publish_date, category, description, stock } = body;

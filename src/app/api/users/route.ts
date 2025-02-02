@@ -1,5 +1,5 @@
 import { pool } from '@/db/config';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 // 获取所有用户
 export async function GET() {
@@ -18,7 +18,7 @@ export async function GET() {
 }
 
 // 创建新用户
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
     try {
       const body = await request.json();
       const { username, email, password } = body;

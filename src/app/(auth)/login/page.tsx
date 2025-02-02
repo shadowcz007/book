@@ -15,7 +15,7 @@ interface LoginForm {
 
 export default function LoginPage() {
   const router = useRouter();
-  const [notification, setNotification] = useState<{
+  const [notification, setNotification]:any = useState<{
     type: 'success' | 'error';
     message: string;
     visible: boolean;
