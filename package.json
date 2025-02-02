@@ -11,15 +11,21 @@
   "dependencies": {
     "@ant-design/icons": "^5.6.0",
     "@ant-design/nextjs-registry": "^1.0.2",
+    "@types/pg": "^8.11.11",
     "antd": "^5.23.3",
     "axios": "^1.7.9",
+    "bcryptjs": "^2.4.3",
     "dayjs": "^1.11.13",
+    "jsonwebtoken": "^9.0.2",
     "next": "15.1.6",
+    "pg": "^8.13.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/jsonwebtoken": "^9.0.8",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

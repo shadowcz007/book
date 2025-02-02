@@ -1,10 +1,12 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Form, Input, Button, Card, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { userApi } from '@/services/api';
+import Notification from '@/components/Notification';
 
 interface LoginForm {
   username: string;
@@ -13,14 +15,33 @@ interface LoginForm {
 
 export default function LoginPage() {
   const router = useRouter();
+  const [notification, setNotification] = useState<{
+    type: 'success' | 'error';
+    message: string;
+    visible: boolean;
+  } | null>(null);
 
-  const onFinish = (values: LoginForm) => {
-    // 这里应该调用真实的登录 API
-    if (values.username === 'admin' && values.password === 'admin') {
-      message.success('登录成功');
-      router.push('/dashboard/books');
-    } else {
-      message.error('用户名或密码错误');
+  const showNotification = (type: 'success' | 'error', message: string) => {
+    setNotification({ type, message, visible: true });
+    setTimeout(() => setNotification(null), 3000);
+  };
+
+  const onFinish = async (values: LoginForm) => {
+    try {
+      const response = await userApi.login(values.username, values.password);
+      
+      // 保存用户信息到 localStorage
+      localStorage.setItem('token', response.token);
+      localStorage.setItem('userId', response.user.id.toString());
+      localStorage.setItem('userRole', response.user.role);
+      localStorage.setItem('username', response.user.username);
+
+      showNotification('success', '登录成功');
+      setTimeout(() => {
+        router.push(response.user.role === 'admin' ? '/dashboard/books' : '/dashboard/borrowing');
+      }, 1000);
+    } catch (error: any) {
+      showNotification('error', error.message || '用户名或密码错误');
     }
   };
 
@@ -32,6 +53,7 @@ export default function LoginPage() {
       alignItems: 'center',
       background: '#f0f2f5' 
     }}>
+      <Notification {...notification} />
       <Card title="图书管理系统登录" style={{ width: 400 }}>
         <Form
           name="login"
