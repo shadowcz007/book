@@ -38,13 +38,13 @@ export async function PUT(
 
 // 删除图书
 export async function DELETE(
-  request: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  context: { params: { id: string } }
 ) {
   try {
     const result = await pool.query(
       'DELETE FROM books WHERE id = $1 RETURNING id',
-      [params.id]
+      [context.params.id]
     );
     
     if (result.rows.length === 0) {
