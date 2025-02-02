@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 // 更新借阅记录（还书/续借）
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }:any
 ) {
   try {
     const { action } = await request.json();

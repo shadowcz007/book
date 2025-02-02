@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 // 还书
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: any
 ) {
   const client = await pool.connect();
   try {
