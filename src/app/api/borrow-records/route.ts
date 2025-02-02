@@ -1,8 +1,8 @@
 import { pool } from '@/db/config';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 // 获取借阅记录
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('userId');
@@ -34,7 +34,7 @@ export async function GET(request: Request) {
 }
 
 // 创建借阅记录
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     const { bookId, userId } = await request.json();
     
