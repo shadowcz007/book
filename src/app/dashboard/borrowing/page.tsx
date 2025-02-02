@@ -74,7 +74,7 @@ export default function BorrowingPage() {
     }
   };
 
-  const checkPermission = (record: BorrowRecord) => {
+  const checkPermission = (record: any) => {
     if (userRole === 'admin') return true;
     if (record.user_id.toString() === userId) return true;
     showNotification('error', '您没有权限执行此操作');
@@ -169,7 +169,7 @@ export default function BorrowingPage() {
     {
       title: '操作',
       key: 'action',
-      render: (_: any, record: BorrowRecord) => {
+      render: (_: any, record: any) => {
         const canOperate = userRole === 'admin' || record.user_id.toString() === userId;
         
         return (
