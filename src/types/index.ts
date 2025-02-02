@@ -24,6 +24,8 @@ export interface BorrowRecord {
   id: string;
   bookId: string;
   userId: string;
+  bookTitle: string;
+  bookAuthor: string;
   borrowDate: string;
   dueDate: string;
   returnDate?: string;

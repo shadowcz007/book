@@ -61,6 +61,28 @@ export async function initDatabase() {
         EXECUTE FUNCTION update_updated_at_column();
     `);
 
+    // 创建借阅记录表
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS borrow_records (
+        id SERIAL PRIMARY KEY,
+        book_id INTEGER REFERENCES books(id),
+        user_id INTEGER REFERENCES users(id),
+        borrow_date TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        due_date TIMESTAMP WITH TIME ZONE NOT NULL,
+        return_date TIMESTAMP WITH TIME ZONE,
+        status VARCHAR(20) NOT NULL DEFAULT 'borrowed',
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+
+      -- 为 borrow_records 表添加更新时间触发器
+      DROP TRIGGER IF EXISTS update_borrow_records_updated_at ON borrow_records;
+      CREATE TRIGGER update_borrow_records_updated_at
+        BEFORE UPDATE ON borrow_records
+        FOR EACH ROW
+        EXECUTE FUNCTION update_updated_at_column();
+    `);
+
     console.log('数据库初始化成功');
   } catch (error) {
     console.error('数据库初始化失败:', error);
