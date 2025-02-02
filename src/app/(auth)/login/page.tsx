@@ -29,6 +29,7 @@ export default function LoginPage() {
   const onFinish = async (values: LoginForm) => {
     try {
       const user = await userApi.login(values.username, values.password);
+      localStorage.setItem('userId', user.id);
       localStorage.setItem('userRole', user.role);
       showNotification('success', '登录成功');
       setTimeout(() => {

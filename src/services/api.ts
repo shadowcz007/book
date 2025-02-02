@@ -122,47 +122,52 @@ export const userApi = {
 
 // 借阅相关 API
 export const borrowApi = {
-  getBorrowRecords: async (): Promise<BorrowRecord[]> => {
-    return Promise.resolve(borrowRecords);
+  getBorrowRecords: async (userId?: string): Promise<BorrowRecord[]> => {
+    const url = userId ? `/api/borrow-records?userId=${userId}` : '/api/borrow-records';
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error('获取借阅记录失败');
+    }
+    return response.json();
   },
 
   borrowBook: async (bookId: string, userId: string): Promise<BorrowRecord> => {
-    const book = books.find(b => b.id === bookId);
-    if (!book) {
-      return Promise.reject(new Error('图书不存在'));
+    const response = await fetch('/api/borrow-records', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ bookId, userId }),
+    });
+    if (!response.ok) {
+      throw new Error('借阅失败');
     }
-    if (book.stock <= 0) {
-      return Promise.reject(new Error('图书库存不足'));
-    }
-
-    const newRecord: BorrowRecord = {
-      id: String(borrowRecords.length + 1),
-      bookId,
-      userId,
-      borrowDate: new Date().toISOString(),
-      dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
-      status: 'borrowed',
-    };
-
-    borrowRecords.push(newRecord);
-    book.stock -= 1;
-    return Promise.resolve(newRecord);
+    return response.json();
   },
 
-  returnBook: async (recordId: string): Promise<BorrowRecord> => {
-    const record = borrowRecords.find(r => r.id === recordId);
-    if (!record) {
-      return Promise.reject(new Error('借阅记录不存在'));
+  returnBook: async (recordId: string): Promise<void> => {
+    const response = await fetch(`/api/borrow-records/${recordId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ action: 'return' }),
+    });
+    if (!response.ok) {
+      throw new Error('还书失败');
     }
+  },
 
-    record.status = 'returned';
-    record.returnDate = new Date().toISOString();
-
-    const book = books.find(b => b.id === record.bookId);
-    if (book) {
-      book.stock += 1;
+  renewBook: async (recordId: string): Promise<void> => {
+    const response = await fetch(`/api/borrow-records/${recordId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ action: 'renew' }),
+    });
+    if (!response.ok) {
+      throw new Error('续借失败');
     }
-
-    return Promise.resolve(record);
   },
 }; 

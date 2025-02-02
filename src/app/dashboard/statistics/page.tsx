@@ -23,20 +23,14 @@ export default function StatisticsPage() {
   const fetchStatistics = async () => {
     setLoading(true);
     try {
-      const [books, users, records] = await Promise.all([
-        bookApi.getBooks(),
-        userApi.getUsers(),
-        borrowApi.getBorrowRecords(),
-      ]);
-
-      setTotalBooks(books.length);
-      setTotalUsers(users.length);
-      setActiveLoans(records.filter(r => r.status === 'borrowed').length);
-
-      // 计算热门图书
-      const bookStats = calculatePopularBooks(books, records);
-      setPopularBooks(bookStats);
-
+      // 获取所有借阅记录
+      const response = await fetch('/api/statistics/borrow-counts');
+      const data = await response.json();
+      
+      setPopularBooks(data.popularBooks);
+      setTotalBooks(data.totalBooks);
+      setTotalUsers(data.totalUsers);
+      setActiveLoans(data.activeLoans);
     } catch (error) {
       console.error('获取统计数据失败:', error);
     } finally {

@@ -9,7 +9,7 @@ import {
   BarChartOutlined,
   LogoutOutlined,
 } from '@ant-design/icons';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 
 const { Header, Sider, Content } = Layout;
 
@@ -20,6 +20,7 @@ interface DashboardLayoutProps {
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [collapsed, setCollapsed] = useState(false);
   const [userRole, setUserRole] = useState<'admin' | 'user'>('user');
+  const pathname = usePathname();
   const router = useRouter();
 
   useEffect(() => {
@@ -73,15 +74,20 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     },
   ];
 
+  // 获取当前选中的菜单项
+  const getSelectedKey = () => {
+    const path = pathname.split('/')[2]; // 获取 dashboard/ 后的路径
+    return path || 'books';
+  };
+
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed}>
         <div style={{ height: 32, margin: 16, background: 'rgba(255, 255, 255, 0.2)' }} />
         <Menu
           theme="dark"
+          selectedKeys={[getSelectedKey()]}
           mode="inline"
-          defaultSelectedKeys={['borrowing']}
-          items={menuItems}
           onClick={({ key }) => {
             if (key === 'logout') {
               handleLogout();
@@ -89,6 +95,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               router.push(`/dashboard/${key}`);
             }
           }}
+          items={menuItems}
         />
       </Sider>
       <Layout>
