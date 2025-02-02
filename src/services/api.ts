@@ -123,7 +123,7 @@ export const userApi = {
 // 借阅相关 API
 export const borrowApi = {
   getBorrowRecords: async (userId?: string): Promise<BorrowRecord[]> => {
-    const url = userId ? `/api/borrow-records?userId=${userId}` : '/api/borrow-records';
+    const url = userId ? `/api/borrow?userId=${userId}` : '/api/borrow';
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error('获取借阅记录失败');
@@ -132,21 +132,25 @@ export const borrowApi = {
   },
 
   borrowBook: async (bookId: string, userId: string): Promise<BorrowRecord> => {
-    const response = await fetch('/api/borrow-records', {
+    const response = await fetch('/api/borrow', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ bookId, userId }),
+      body: JSON.stringify({
+        bookId: parseInt(bookId),
+        userId: parseInt(userId)
+      }),
     });
     if (!response.ok) {
-      throw new Error('借阅失败');
+      const error = await response.json();
+      throw new Error(error.error || '借阅失败');
     }
     return response.json();
   },
 
-  returnBook: async (recordId: string): Promise<void> => {
-    const response = await fetch(`/api/borrow-records/${recordId}`, {
+  returnBook: async (recordId: string): Promise<BorrowRecord> => {
+    const response = await fetch(`/api/borrow/${recordId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -156,10 +160,10 @@ export const borrowApi = {
     if (!response.ok) {
       throw new Error('还书失败');
     }
+    return response.json();
   },
-
-  renewBook: async (recordId: string): Promise<void> => {
-    const response = await fetch(`/api/borrow-records/${recordId}`, {
+  renewBook: async (recordId: string): Promise<BorrowRecord> => {
+    const response = await fetch(`/api/borrow/${recordId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -169,5 +173,7 @@ export const borrowApi = {
     if (!response.ok) {
       throw new Error('续借失败');
     }
+
+    return response.json();
   },
 }; 

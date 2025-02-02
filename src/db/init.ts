@@ -65,13 +65,12 @@ export async function initDatabase() {
     await client.query(`
       CREATE TABLE IF NOT EXISTS borrow_records (
         id SERIAL PRIMARY KEY,
-        book_id INTEGER REFERENCES books(id) ON DELETE CASCADE,
-        user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+        book_id INTEGER REFERENCES books(id),
+        user_id INTEGER REFERENCES users(id),
         borrow_date TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
         due_date TIMESTAMP WITH TIME ZONE NOT NULL,
         return_date TIMESTAMP WITH TIME ZONE,
         status VARCHAR(20) NOT NULL DEFAULT 'borrowed',
-        renewed_times INTEGER DEFAULT 0,
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       );

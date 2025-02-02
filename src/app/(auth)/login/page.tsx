@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Form, Input, Button, Card } from 'antd';
+import { Form, Input, Button, Card, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -28,15 +28,20 @@ export default function LoginPage() {
 
   const onFinish = async (values: LoginForm) => {
     try {
-      const user = await userApi.login(values.username, values.password);
-      localStorage.setItem('userId', user.id);
-      localStorage.setItem('userRole', user.role);
+
+      const response = await userApi.login(values.username, values.password);
+      
+      // 保存用户信息到 localStorage
+      localStorage.setItem('token', response.token);
+      localStorage.setItem('userId', response.user.id.toString());
+      localStorage.setItem('userRole', response.user.role);
+      localStorage.setItem('username', response.user.username);
       showNotification('success', '登录成功');
       setTimeout(() => {
-        router.push(user.role === 'admin' ? '/dashboard/books' : '/dashboard/borrowing');
+        router.push(response.user.role === 'admin' ? '/dashboard/books' : '/dashboard/borrowing');
       }, 1000);
-    } catch (error) {
-      showNotification('error', '用户名或密码错误');
+    } catch (error: any) {
+      showNotification('error', error.message || '用户名或密码错误');
     }
   };
 
