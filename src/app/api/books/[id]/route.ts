@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 // 更新图书
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: any
 ) {
   try {
     const body = await request.json();
@@ -39,7 +39,7 @@ export async function PUT(
 // 删除图书
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: any
 ) {
   try {
     const result = await pool.query(
