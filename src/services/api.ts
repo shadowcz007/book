@@ -10,7 +10,7 @@ export const bookApi = {
   addBook: async (book: Omit<Book, 'id'>): Promise<Book> => {
     const newBook = {
       ...book,
-      id: String(books.length + 1),
+      id: new Date().getTime().toString(),
     };
     books.push(newBook);
     return Promise.resolve(newBook);
