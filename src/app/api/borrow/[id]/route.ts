@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 // 还书
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   const client = await pool.connect();
   try {
@@ -15,7 +15,7 @@ export async function PUT(
       // 处理还书
       const borrowRecord = await client.query(
         'SELECT * FROM borrow_records WHERE id = $1',
-        [params.id]
+        [context.params.id]
       );
 
       if (borrowRecord.rows.length === 0) {
@@ -31,7 +31,7 @@ export async function PUT(
          SET status = 'returned', return_date = CURRENT_TIMESTAMP
          WHERE id = $1
          RETURNING *`,
-        [params.id]
+        [context.params.id]
       );
 
       // 更新图书库存
@@ -46,7 +46,7 @@ export async function PUT(
       // 处理续借
       const borrowRecord = await client.query(
         'SELECT * FROM borrow_records WHERE id = $1',
-        [params.id]
+        [context.params.id]
       );
 
       if (borrowRecord.rows.length === 0) {
@@ -72,7 +72,7 @@ export async function PUT(
          SET due_date = $1
          WHERE id = $2
          RETURNING *`,
-        [newDueDate, params.id]
+        [newDueDate, context.params.id]
       );
 
       await client.query('COMMIT');

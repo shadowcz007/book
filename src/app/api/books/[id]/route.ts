@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 // 更新图书
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   try {
     const body = await request.json();
@@ -16,7 +16,7 @@ export async function PUT(
            publish_date = $5, category = $6, description = $7, stock = $8
        WHERE id = $9
        RETURNING *`,
-      [title, author, isbn, publisher, publish_date, category, description, stock, params.id]
+      [title, author, isbn, publisher, publish_date, category, description, stock, context.params.id]
     );
     
     if (result.rows.length === 0) {
