@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 
-import { Table, Button, Space, Tag, message, Modal, Tabs } from 'antd';
+import { Table, Button, Space, Tag,  Tabs } from 'antd';
 
 import { borrowApi, bookApi } from '@/services/api';
 import { BorrowRecord, Book } from '@/types';
@@ -12,8 +12,7 @@ import { showNotification } from '@/components/Common/Notification';
 
 const { TabPane } = Tabs;
 
-const { Search } = Input;
-
+ 
 export default function BorrowingPage() {
   const router = useRouter();
   const [records, setRecords] = useState<BorrowRecord[]>([]);
@@ -37,12 +36,11 @@ export default function BorrowingPage() {
     setUserRole(role || '');
     setUserId(id);
     fetchData();
-  }, []);
+  }, [router]);
 
-  const fetchRecords = async () => {
+  const fetchData = async () => {
     setLoading(true);
     try {
-
       const [recordsData, booksData] = await Promise.all([
         userRole === 'admin' 
           ? borrowApi.getBorrowRecords()
@@ -55,13 +53,11 @@ export default function BorrowingPage() {
     } catch (error) {
       showNotification('error', '获取数据失败');
       console.error('获取借阅记录失败:', error);
-
     } finally {
       setLoading(false);
     }
   };
-
-
+ 
   const handleBorrow = async (bookId: string) => {
     if (!userId) {
       showNotification('error', '请先登录');
@@ -78,7 +74,7 @@ export default function BorrowingPage() {
     }
   };
 
-  const checkPermission = (record: BorrowRecord) => {
+  const checkPermission = (record: any) => {
     if (userRole === 'admin') return true;
     if (record.user_id.toString() === userId) return true;
     showNotification('error', '您没有权限执行此操作');
@@ -173,7 +169,7 @@ export default function BorrowingPage() {
     {
       title: '操作',
       key: 'action',
-      render: (_: any, record: BorrowRecord) => {
+      render: (_: any, record: any) => {
         const canOperate = userRole === 'admin' || record.user_id.toString() === userId;
         
         return (

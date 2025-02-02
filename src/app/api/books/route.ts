@@ -30,17 +30,14 @@ export async function POST(request: Request) {
     );
     
     return NextResponse.json(result.rows[0]);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('创建图书失败:', error);
-    
-    // 处理特定的错误类型
-    if (error.code === '23505' && error.constraint === 'books_isbn_key') {
+    if (error instanceof Error) {
       return NextResponse.json(
-        { error: 'ISBN已存在，请检查后重试' },
-        { status: 400 }
+        { error: error.message },
+        { status: 500 }
       );
     }
-    
     return NextResponse.json(
       { error: '创建图书失败' },
       { status: 500 }
