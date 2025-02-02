@@ -22,7 +22,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [userRole, setUserRole] = useState<'admin' | 'user'>('user');
   const pathname = usePathname();
   const router = useRouter();
-  const pathname = usePathname();
+ 
 
   useEffect(() => {
     // 从 localStorage 或 session 中获取用户角色

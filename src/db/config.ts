@@ -6,9 +6,9 @@ const dbConfig: PoolConfig = {
   database: process.env.DB_NAME || 'book_management',
   password: process.env.DB_PASSWORD || '1215',
   port: Number(process.env.DB_PORT) || 5432,
-  ssl: process.env.NODE_ENV === 'production' ? {
+  ssl: {
     rejectUnauthorized: false
-  } : undefined
+  }
 };
 
 export const pool = new Pool(dbConfig); 
