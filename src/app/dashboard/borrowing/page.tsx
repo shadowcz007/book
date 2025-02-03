@@ -21,7 +21,7 @@ export default function BorrowingPage() {
       setRecords(recordsData);
       setBooks(booksData);
     } catch (error) {
-      message.error('获取借阅记录失败');
+      // message.error('获取借阅记录失败');
     } finally {
       setLoading(false);
     }
@@ -34,10 +34,10 @@ export default function BorrowingPage() {
   const handleReturn = async (record: BorrowRecord) => {
     try {
       await borrowApi.returnBook(record.id);
-      message.success('还书成功');
+      // message.success('还书成功');
       fetchData();
     } catch (error) {
-      message.error('还书失败');
+      // message.error('还书失败');
     }
   };
 

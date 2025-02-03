@@ -17,7 +17,7 @@ export default function RegisterPage() {
 
   const onFinish = (values: RegisterForm) => {
     // 这里应该调用真实的注册 API
-    message.success('注册成功');
+    // message.success('注册成功');
     router.push('/login');
   };
 

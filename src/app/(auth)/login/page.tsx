@@ -17,10 +17,10 @@ export default function LoginPage() {
   const onFinish = (values: LoginForm) => {
     // 这里应该调用真实的登录 API
     if (values.username === 'admin' && values.password === 'admin') {
-      message.success('登录成功');
+      // message.success('登录成功');
       router.push('/dashboard/books');
     } else {
-      message.error('用户名或密码错误');
+      // message.error('用户名或密码错误');
     }
   };
 

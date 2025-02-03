@@ -16,7 +16,7 @@ export default function UsersPage() {
       const data = await userApi.getUsers();
       setUsers(data);
     } catch (error) {
-      message.error('获取用户列表失败');
+      // message.error('获取用户列表失败');
     } finally {
       setLoading(false);
     }
@@ -65,7 +65,9 @@ export default function UsersPage() {
               Modal.confirm({
                 title: '确认删除',
                 content: `确定要删除用户 ${record.username} 吗？`,
-                onOk: () => message.success('删除成功'),
+                onOk: () => {
+                  // message.success('删除成功')
+                },
               });
             }}
           >
